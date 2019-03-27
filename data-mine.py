@@ -69,21 +69,21 @@ def parse_question(sess, url, f):
     a = soup.find("span", {"class": "answer"}).find("input")["value"]
     q = soup.find("div", {"class": "qtext"}).find("p").text
     with lock:
-        f.write(str(q) + '|' + str(a) + '\n')
+        f.write(str(q).replace("\n", "").replace("\r", "") + '|' + str(a).replace("\n", "").replace("\r", "") + '\n')
 
 if __name__ == "__main__":
 
     # Instantiate a thread pool with 5 worker threads
-    with open('test1.txt', 'r') as f:
+    with open('links/test1.txt', 'r') as f:
         urls = f.readlines()
     
-    pool = ThreadPool(10)
+    pool = ThreadPool(20)
 
     # Add the jobs in bulk to the thread pool. Alternatively you could use
     # `pool.add_task` to add single jobs. The code will block here, which
     # makes it possible to cancel the thread pool with an exception when
     # the currently running batch of workers is finished.
-    with open('results.csv', "w") as f:
+    with open('results/results5.csv', "w") as f:
         for u in urls:
             pool.add_task(parse_question, session_requests, u, f)
         pool.wait_completion()
